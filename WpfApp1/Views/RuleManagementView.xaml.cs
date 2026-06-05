@@ -446,8 +446,8 @@ namespace WpfApp1.Views
 
                 // Step 8: Display suggestions
                 SuggestionsDataGrid.ItemsSource = suggestions;
-                SuggestionsDataGrid.Visibility = Visibility.Visible;
-                RulesDataGrid.Visibility = Visibility.Collapsed;
+                SuggestionsScrollViewer.Visibility = Visibility.Visible;
+                RulesScrollViewer.Visibility = Visibility.Collapsed;
 
                 StatusText.Text = $"✓ Generated {suggestions.Count} smart suggestions from {files.Length} files. Review and accept/reject them.";
                 GetSuggestionsBtn.IsEnabled = true;
@@ -476,6 +476,15 @@ namespace WpfApp1.Views
                     // Create a rule from the suggestion
                     string ruleName = $"AI-Suggested: {topSuggestion.SuggestedCategory}";
                     string filePattern = topSuggestion.FileExtension;
+
+                    // Ensure file pattern starts with *. format
+                    if (!filePattern.StartsWith("*."))
+                    {
+                        if (filePattern.StartsWith("."))
+                            filePattern = "*" + filePattern;
+                        else if (!string.IsNullOrEmpty(filePattern))
+                            filePattern = "*." + filePattern;
+                    }
 
                     // Let user select destination folder
                     string destination = SelectFolderForRule(topSuggestion.SuggestedCategory);
@@ -542,8 +551,8 @@ namespace WpfApp1.Views
         private void ShowRulesList()
         {
             LoadRules();
-            SuggestionsDataGrid.Visibility = Visibility.Collapsed;
-            RulesDataGrid.Visibility = Visibility.Visible;
+            SuggestionsScrollViewer.Visibility = Visibility.Collapsed;
+            RulesScrollViewer.Visibility = Visibility.Visible;
         }
 
         /// <summary>
